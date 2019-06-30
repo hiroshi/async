@@ -23,6 +23,10 @@ services:
     image: postgres:11.3-alpine
     volumes:
     - pgdata:/var/lib/postgresql/data
+  socket-proxy:
+    image: hiroshi3110/socket-proxy
+    ports:
+    - 3100:3100
 volumes:
   bundle:
   node_modules:
