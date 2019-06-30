@@ -14,6 +14,8 @@ services:
     command: ['rails', 's', '-b', '0.0.0.0', '-p', '5010']
     ports:
     - 5010:5010
+    tmpfs:
+    - /app/tmp/pids
   spring:
     <<: *app
     command: ['bin/spring', 'server']
