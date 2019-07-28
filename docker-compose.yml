@@ -12,6 +12,8 @@ services:
   app:
     <<: *app
     command: ['rails', 's', '-b', '0.0.0.0', '-p', '5010']
+    environment:
+    - SOCKET_PROXY_URL=http://sp.async.lvh.me:3200/
     ports:
     - 5010:5010
     tmpfs:
@@ -25,8 +27,14 @@ services:
     - pgdata:/var/lib/postgresql/data
   socket-proxy:
     image: hiroshi3110/socket-proxy
+    environment:
+    - PORT=3200
     ports:
-    - 3100:3100
+    - 3200:3200
+    networks:
+      default:
+        aliases:
+        - sp.async.lvh.me
 volumes:
   bundle:
   node_modules:
