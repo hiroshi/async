@@ -15,7 +15,17 @@
 </template>
 
 <script>
+import SocketProxy from "./SocketProxy"
+
 export default {
+  mounted: function () {
+    SocketProxy.subscribe('tasks.new', (data) => {
+      console.log(data)
+    })
+  },
+  destroyed: function () {
+    SocketProxy.unsubscribe('tasks.new')
+  }
   methods: {
     create: function () {
       const formData = new FormData(this.$refs.form)
@@ -27,7 +37,11 @@ export default {
   },
   computed: {
     tasks: function () {
-      return [{name: 'first'}, {name: 'second'}]
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
+      return fetch("/tasks", { headers })
     },
     csrfToken: function () {
       // return $('meta[name="csrf-token"]').content
