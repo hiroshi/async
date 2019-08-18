@@ -25,8 +25,12 @@ export default {
     }
   },
   mounted: function () {
-    SocketProxy.subscribe('tasks.new', (data) => {
-      console.log(data)
+    SocketProxy.subscribe('tasks.new', (task) => {
+      // console.log(task)
+      // console.log(this.tasks)
+      let tasks = this.tasks
+      tasks.push(task)
+      this.tasks = tasks
     })
 
     let headers = new Headers({
@@ -49,6 +53,8 @@ export default {
       fetch("/tasks", {
         method: 'POST',
         body: formData
+      }).then((res) => {
+        this.$refs.form.reset()
       })
     }
   }
