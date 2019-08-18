@@ -15,7 +15,34 @@
 </template>
 
 <script>
+import SocketProxy from "./SocketProxy"
+
 export default {
+  data: function () {
+    return {
+      tasks: [],
+      csrfToken: document.getElementsByName("csrf-token")[0].content
+    }
+  },
+  mounted: function () {
+    SocketProxy.subscribe('tasks.new', (data) => {
+      console.log(data)
+    })
+
+    let headers = new Headers({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    })
+
+    fetch("/tasks", { headers }).then((res) => {
+      return res.json()
+    }).then((tasks) => {
+      this.tasks = tasks
+    })
+  },
+  destroyed: function () {
+    SocketProxy.unsubscribe('tasks.new')
+  },
   methods: {
     create: function () {
       const formData = new FormData(this.$refs.form)
@@ -24,21 +51,7 @@ export default {
         body: formData
       })
     }
-  },
-  computed: {
-    tasks: function () {
-      return [{name: 'first'}, {name: 'second'}]
-    },
-    csrfToken: function () {
-      // return $('meta[name="csrf-token"]').content
-      return document.getElementsByName("csrf-token")[0].content
-    }
   }
-  // data: function () {
-  //   return {
-  //     message: "Hello Vue!"
-  //   }
-  // }
 }
 </script>
 

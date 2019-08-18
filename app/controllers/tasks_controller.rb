@@ -3,13 +3,13 @@ class TasksController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: Tasks.all
+        render json: Task.all
       end
     end
   end
 
   def create
-    task = Task.new(params.permit(:name))
+    task = Task.create!(params.permit(:name))
     RestClient.post(
       'http://sp.async.lvh.me:3200/publish',
       { room: 'tasks.new', args: [task.as_json(only: [:id, :name])] }.to_json,
