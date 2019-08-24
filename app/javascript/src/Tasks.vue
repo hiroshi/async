@@ -7,7 +7,7 @@
       <button type="submit">Submit</button>
     </form>
     <ul>
-      <li v-for="task in tasks">
+      <li v-for="task in tasks" :key="task.id">
         {{ task.name }}
       </li>
     </ul>
