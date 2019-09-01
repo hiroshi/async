@@ -8,7 +8,7 @@
     </form>
     <ul>
       <li v-for="task in tasks" :key="task.id">
-        {{ task.name }}
+        <Task v-bind:task="task" />
       </li>
     </ul>
   </div>
@@ -16,8 +16,10 @@
 
 <script>
 import SocketProxy from "./SocketProxy"
+import Task from './Task.vue'
 
 export default {
+  components: { Task },
   data: function () {
     return {
       tasks: [],
