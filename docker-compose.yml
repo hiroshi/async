@@ -30,8 +30,8 @@ services:
     command: ['bin/webpack-dev-server']
     environment:
     - SOCKET_PROXY_URL=http://sp.async.lvh.me:3200/
-    # ports:
-    # - 3035:3035
+    ports:
+    - 3035:3035
   spring:
     <<: *app
     command: ['bin/spring', 'server']
