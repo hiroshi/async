@@ -27,12 +27,12 @@ function _subscribe (room, once, fn) {
     socket().emit('subscribe', { room }, (data) => {
       if (data.success) {
         if (once) {
-          socket().once('update', (data) => {
+          socket().once(room, (data) => {
             fn(data)
             unsubscribe(room)
           })
         } else {
-          socket().on('update', fn)
+          socket().on(room, fn)
         }
       } else {
         console.error(`subscribing room=${room} failed:`, data.message)

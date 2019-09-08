@@ -2,6 +2,12 @@ version: '3.7'
 x-app: &app
   # image: ruby:2.6.3
   build: .
+  environment:
+  - SOCKET_PROXY_URL=http://sp.async.lvh.me:3200/
+  - POSTGRES_HOST=postgres
+  - WEBPACKER_DEV_SERVER_HOST=webpacker
+  tmpfs:
+  - /app/tmp/pids
   volumes:
   - .:/app
   - bundle:/usr/local/bundle
@@ -13,14 +19,8 @@ services:
   app:
     <<: *app
     command: ['rails', 's', '-b', '0.0.0.0', '-p', '5010']
-    environment:
-    - SOCKET_PROXY_URL=http://sp.async.lvh.me:3200/
-    - POSTGRES_HOST=postgres
-    - WEBPACKER_DEV_SERVER_HOST=webpacker
     ports:
     - 5010:5010
-    tmpfs:
-    - /app/tmp/pids
     networks:
       default:
         aliases:
@@ -28,10 +28,8 @@ services:
   webpacker:
     <<: *app
     command: ['bin/webpack-dev-server']
-    environment:
-    - SOCKET_PROXY_URL=http://sp.async.lvh.me:3200/
     ports:
-    - 3035:3035
+      - 3035:3035
   spring:
     <<: *app
     command: ['bin/spring', 'server']
@@ -44,7 +42,7 @@ services:
     volumes:
     - pgdata:/var/lib/postgresql/data
   socket-proxy:
-    image: hiroshi3110/socket-proxy
+    image: hiroshi3110/socket-proxy:0.1.0
     environment:
     - PORT=3200
     ports:
