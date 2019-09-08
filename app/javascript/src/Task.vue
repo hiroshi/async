@@ -16,7 +16,6 @@ export default {
   data: function () {
     return {
       task: this.initialTask,
-      done: this.initialTask.done_at,
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
@@ -30,17 +29,25 @@ export default {
       })
     })
   },
-  watch: {
-    done: function (val) {
-      //console.log(val)
-      const formData = new FormData(this.$refs.form)
-      fetch(`/tasks/${this.task.id}`, {
-        method: 'POST',
-        body: formData
-      }).catch((err) => {
-        console.error(err)
-        this.$refs.form.reset()
-      })
+  destroyed: function () {
+    SocketProxy.unsubscribe(`tasks.${task.id}.update`)
+  },
+  computed: {
+    done: {
+      get: function () {
+        return !!this.task.done_at
+      },
+      set: function (val) {
+        //console.log(val)
+        const formData = new FormData(this.$refs.form)
+        fetch(`/tasks/${this.task.id}`, {
+          method: 'POST',
+          body: formData
+        }).catch((err) => {
+          console.error(err)
+          this.$refs.form.reset()
+        })
+      }
     }
   }
 }
