@@ -22,32 +22,24 @@ export default {
   components: { Task },
   data: function () {
     return {
-      tasks: [],
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
   mounted: function () {
     SocketProxy.subscribe('tasks.new', (task) => {
-      // console.log(task)
-      // console.log(this.tasks)
       let tasks = this.tasks
       tasks.push(task)
       this.tasks = tasks
     })
-
-    let headers = new Headers({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    })
-
-    fetch("/tasks", { headers }).then((res) => {
-      return res.json()
-    }).then((tasks) => {
-      this.tasks = tasks
-    })
+    this.$store.dispatch('fetchTasks')
   },
   destroyed: function () {
     SocketProxy.unsubscribe('tasks.new')
+  },
+  computed: {
+    tasks () {
+      return this.$store.state.tasks
+    }
   },
   methods: {
     create: function () {
