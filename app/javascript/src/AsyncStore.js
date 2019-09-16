@@ -7,6 +7,11 @@ export default new Vuex.Store({
   state: {
     tasks: []
   },
+  getters: {
+    getTaskById: (state) => (id) => {
+      return state.tasks.find(task => task.id === id)
+    }
+  },
   mutations: {
     setTasks (state, tasks) {
       state.tasks = tasks

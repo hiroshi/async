@@ -8,7 +8,7 @@
     </form>
     <ul>
       <li v-for="task in tasks" :key="task.id">
-        <Task v-bind:initialTask="task" />
+        <Task v-bind:taskId="task.id" />
       </li>
     </ul>
   </div>

@@ -12,27 +12,30 @@
 import SocketProxy from "./SocketProxy"
 
 export default {
-  props: ['initialTask'],
+  props: ['taskId'],
   data: function () {
     return {
-      task: this.initialTask,
+      // task: this.initialTask,
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
-  mounted: function () {
-    let vm = this
-    this.$nextTick(() => {
-      SocketProxy.subscribe(`tasks.${vm.task.id}.update`, (task) => {
-        console.log(`tasks.${vm.task.id}.update`, task)
-        // console.log(this.tasks)
-        vm.task = task
-      })
-    })
-  },
+  // mounted: function () {
+  //   let vm = this
+  //   this.$nextTick(() => {
+  //     SocketProxy.subscribe(`tasks.${vm.task.id}.update`, (task) => {
+  //       console.log(`tasks.${vm.task.id}.update`, task)
+  //       // console.log(this.tasks)
+  //       vm.task = task
+  //     })
+  //   })
+  // },
   destroyed: function () {
-    SocketProxy.unsubscribe(`tasks.${task.id}.update`)
+    SocketProxy.unsubscribe(`tasks.${taskId}.update`)
   },
   computed: {
+    task () {
+      return this.$store.getters.getTaskById(this.taskId)
+    },
     done: {
       get: function () {
         return !!this.task.done_at
@@ -40,7 +43,7 @@ export default {
       set: function (val) {
         //console.log(val)
         const formData = new FormData(this.$refs.form)
-        fetch(`/tasks/${this.task.id}`, {
+        fetch(`/tasks/${this.taskId}`, {
           method: 'POST',
           body: formData
         }).catch((err) => {
