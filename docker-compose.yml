@@ -12,9 +12,7 @@ x-app: &app
   - .:/app
   - bundle:/usr/local/bundle
   - node_modules:/app/node_modules
-  depends_on:
-  - postgres
-  - socket-proxy
+  - yarn_cache:/usr/local/share/.cache/yarn/v4
 services:
   app:
     <<: *app
@@ -25,6 +23,10 @@ services:
       default:
         aliases:
         - async.lvh.me
+    depends_on:
+    - postgres
+    - socket-proxy
+    - webpacker
   webpacker:
     <<: *app
     command: ['bin/webpack-dev-server']
@@ -55,3 +57,4 @@ volumes:
   bundle:
   node_modules:
   pgdata:
+  yarn_cache:
