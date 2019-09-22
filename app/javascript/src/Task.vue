@@ -15,7 +15,6 @@ export default {
   props: ['taskId'],
   data: function () {
     return {
-      // task: this.initialTask,
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
@@ -41,15 +40,8 @@ export default {
         return !!this.task.done_at
       },
       set: function (val) {
-        //console.log(val)
         const formData = new FormData(this.$refs.form)
-        fetch(`/tasks/${this.taskId}`, {
-          method: 'POST',
-          body: formData
-        }).catch((err) => {
-          console.error(err)
-          this.$refs.form.reset()
-        })
+        this.$store.dispatch('updateTask', { taskId: this.taskId, formData })
       }
     }
   }

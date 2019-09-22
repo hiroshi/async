@@ -19,7 +19,6 @@ export default new Vuex.Store({
   },
   actions: {
     fetchTasks ({ commit }) {
-      // commit('setTasks')
       let headers = new Headers({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -29,6 +28,14 @@ export default new Vuex.Store({
         return res.json()
       }).then((tasks) => {
         commit('setTasks', tasks)
+      })
+    },
+    updateTask ({ commit }, { taskId, formData }) {
+      fetch(`/tasks/${taskId}`, {
+        method: 'POST',
+        body: formData
+      }).catch((err) => {
+        console.error(err)
       })
     }
   }
