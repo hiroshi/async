@@ -3,7 +3,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: Task.all
+        render json: Task.order(:id).all
       end
     end
   end
