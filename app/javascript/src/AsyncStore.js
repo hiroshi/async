@@ -1,6 +1,8 @@
 import Vue from 'vue/dist/vue.esm'
 import Vuex from 'vuex'
 Vue.use(Vuex)
+import SocketProxy from "./SocketProxy"
+
 
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
@@ -14,7 +16,19 @@ export default new Vuex.Store({
   },
   mutations: {
     setTasks (state, tasks) {
+      const store = this
       state.tasks = tasks
+      state.tasks.forEach(task => {
+        SocketProxy.subscribe(`tasks.${task.id}.update`, (t) => {
+          //console.log(`tasks.${t.id}.update`, t)
+          //Object.assign(task, t)
+          store.commit('updateTask', t)
+        })
+      })
+    },
+    updateTask (state, t) {
+      const task = this.getters.getTaskById(t.id)
+      Object.assign(task, t)
     }
   },
   actions: {

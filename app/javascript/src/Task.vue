@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import SocketProxy from "./SocketProxy"
-
 export default {
   props: ['taskId'],
   data: function () {
@@ -18,16 +16,6 @@ export default {
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
-  // mounted: function () {
-  //   let vm = this
-  //   this.$nextTick(() => {
-  //     SocketProxy.subscribe(`tasks.${vm.task.id}.update`, (task) => {
-  //       console.log(`tasks.${vm.task.id}.update`, task)
-  //       // console.log(this.tasks)
-  //       vm.task = task
-  //     })
-  //   })
-  // },
   destroyed: function () {
     SocketProxy.unsubscribe(`tasks.${taskId}.update`)
   },
