@@ -18,13 +18,18 @@ export default new Vuex.Store({
     setTasks (state, tasks) {
       const store = this
       state.tasks = tasks
+      SocketProxy.subscribe('tasks.new', (task) => {
+        store.commit('pushTask', task)
+      })
+  
       state.tasks.forEach(task => {
-        SocketProxy.subscribe(`tasks.${task.id}.update`, (t) => {
-          //console.log(`tasks.${t.id}.update`, t)
-          //Object.assign(task, t)
-          store.commit('updateTask', t)
+        SocketProxy.subscribe(`tasks.${task.id}.update`, (task) => {
+          store.commit('updateTask', task)
         })
       })
+    },
+    pushTask (state, t) {
+      state.tasks.push(t)
     },
     updateTask (state, t) {
       const task = this.getters.getTaskById(t.id)

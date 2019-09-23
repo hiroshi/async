@@ -25,14 +25,6 @@ export default {
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
-  mounted: function () {
-    SocketProxy.subscribe('tasks.new', (task) => {
-      let tasks = this.tasks
-      tasks.push(task)
-      this.tasks = tasks
-    })
-    this.$store.dispatch('fetchTasks')
-  },
   destroyed: function () {
     SocketProxy.unsubscribe('tasks.new')
   },
