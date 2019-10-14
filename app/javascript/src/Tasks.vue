@@ -22,18 +22,20 @@ export default {
   components: { Task },
   data: function () {
     return {
+      taskListId: null,
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
-  mounted: function () {
-    this.$store.dispatch('fetchTasks')
+  created: async function () {
+    this.fetchId = this.$store.getters.fetchId()
+    this.$store.dispatch('fetchTasks', this.fetchId)
   },
-  destroyed: function () {
-    SocketProxy.unsubscribe('tasks.new')
-  },
+  // destroyed: function () {
+  //   SocketProxy.unsubscribe('tasks.new')
+  // },
   computed: {
     tasks () {
-      return this.$store.state.tasks
+      return this.$store.getters.tasks(this.fetchId)
     }
   },
   methods: {

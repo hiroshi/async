@@ -3,26 +3,39 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 import SocketProxy from "./SocketProxy"
 
-
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    tasks: []
+    fetches: []
   },
   getters: {
-    getTaskById: (state) => (id) => {
-      return state.tasks.find(task => task.id === id)
+    fetchId: (state) => () => {
+      return 0
+    },
+    tasks: (state) => (fetchId) => {
+      return state.fetches[fetchId]
+    },
+    getTaskById: (state, getters) => (taskId) => {
+      let task
+      state.fetches.forEach(tasks => {
+        task = tasks.find(task => task.id === taskId)
+        if (task) {
+          return
+        }
+      })
+      return task
     }
   },
   mutations: {
-    setTasks (state, tasks) {
+    setTasks (state, {fetchId, tasks}) {
       const store = this
-      state.tasks = tasks
+      Vue.set(state.fetches, fetchId, tasks)
+
       SocketProxy.subscribe('tasks.new', (task) => {
         store.commit('pushTask', task)
       })
   
-      state.tasks.forEach(task => {
+      tasks.forEach(task => {
         SocketProxy.subscribe(`tasks.${task.id}.update`, (task) => {
           store.commit('updateTask', task)
         })
@@ -37,16 +50,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    fetchTasks ({ commit }) {
+    fetchTasks ({ commit, state }, fetchId) {
       let headers = new Headers({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       })
-  
       fetch("/tasks", { headers }).then((res) => {
         return res.json()
       }).then((tasks) => {
-        commit('setTasks', tasks)
+        commit('setTasks', {fetchId, tasks})
       })
     },
     updateTask ({ commit }, { taskId, formData }) {
