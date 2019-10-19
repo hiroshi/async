@@ -42,7 +42,7 @@ export default new Vuex.Store({
       })
     },
     pushTask (state, t) {
-      state.tasks.push(t)
+      state.fetches[0].push(t)
     },
     updateTask (state, t) {
       const task = this.getters.getTaskById(t.id)
