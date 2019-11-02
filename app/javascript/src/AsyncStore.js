@@ -31,8 +31,11 @@ export default new Vuex.Store({
       const store = this
       Vue.set(state.fetches, fetchId, tasks)
 
-      SocketProxy.subscribe('tasks.new', (task) => {
-        store.commit('pushTask', task)
+      // SocketProxy.subscribe('tasks.new', (task) => {
+      //   store.commit('pushTask', task)
+      // })
+      SocketProxy.subscribe('tasks?done=false', (tasks) => {
+        store.commit('updateTasks', {fetchId, tasks})
       })
   
       tasks.forEach(task => {
@@ -41,9 +44,13 @@ export default new Vuex.Store({
         })
       })
     },
-    pushTask (state, t) {
-      state.fetches[0].push(t)
+    updateTasks (state, {fetchId, tasks}) {
+      // TODO: unsubscribe old tasks from 'updateTask' and subscribe new tasks
+      Vue.set(state.fetches, fetchId, tasks)
     },
+    // pushTask (state, t) {
+    //   state.fetches[0].push(t)
+    // },
     updateTask (state, t) {
       const task = this.getters.getTaskById(t.id)
       Object.assign(task, t)

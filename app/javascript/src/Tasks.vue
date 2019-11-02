@@ -6,36 +6,19 @@
       <input type="text" name="name" />
       <button type="submit">Submit</button>
     </form>
-    <ul>
-      <li v-for="task in tasks" :key="task.id">
-        <Task v-bind:taskId="task.id" />
-      </li>
-    </ul>
+    <TaskList />
   </div>
 </template>
 
 <script>
 import SocketProxy from "./SocketProxy"
-import Task from './Task.vue'
+import TaskList from './TaskList'
 
 export default {
-  components: { Task },
+  components: { TaskList },
   data: function () {
     return {
-      taskListId: null,
       csrfToken: document.getElementsByName("csrf-token")[0].content
-    }
-  },
-  created: async function () {
-    this.fetchId = this.$store.getters.fetchId()
-    this.$store.dispatch('fetchTasks', this.fetchId)
-  },
-  // destroyed: function () {
-  //   SocketProxy.unsubscribe('tasks.new')
-  // },
-  computed: {
-    tasks () {
-      return this.$store.getters.tasks(this.fetchId)
     }
   },
   methods: {

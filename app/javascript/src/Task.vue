@@ -16,9 +16,10 @@ export default {
       csrfToken: document.getElementsByName("csrf-token")[0].content
     }
   },
-  destroyed: function () {
-    SocketProxy.unsubscribe(`tasks.${taskId}.update`)
-  },
+  // SocketProxy.subscribe/unsubscribe should be done in stores.
+  // destroyed: function () {
+  //   SocketProxy.unsubscribe(`tasks.${taskId}.update`)
+  // },
   computed: {
     task () {
       return this.$store.getters.getTaskById(this.taskId)
