@@ -6,7 +6,8 @@
       <input type="text" name="name" />
       <button type="submit">Submit</button>
     </form>
-    <TaskList />
+    <TaskList :query="{done: true}" />
+    <TaskList :query="{done: false}" />
   </div>
 </template>
 

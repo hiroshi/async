@@ -3,7 +3,6 @@ import io from 'socket.io-client'
 // // NOTE: For system spec, it is difficult to make socket-proxy work with...
 // import Env from './Env'
 
-console.log(process.env.SOCKET_PROXY_URL)
 const url = process.env.SOCKET_PROXY_URL
 
 const singleton = {}

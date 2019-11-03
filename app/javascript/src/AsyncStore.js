@@ -3,25 +3,30 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 import SocketProxy from "./SocketProxy"
 
+function queryString(query) {
+  const params = new URLSearchParams()
+  Object.keys(query).forEach((k) => params.append(k, query[k]))
+  return params.toString()
+}
+
+
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
     fetches: []
   },
   getters: {
-    fetchId: (state) => () => {
-      return 0
+    fetchId: (state) => (query) => {
+      return JSON.stringify(query)
     },
     tasks: (state) => (fetchId) => {
       return state.fetches[fetchId]
     },
     getTaskById: (state, getters) => (taskId) => {
       let task
-      state.fetches.forEach(tasks => {
+      Object.values(state.fetches).find(tasks => {
         task = tasks.find(task => task.id === taskId)
-        if (task) {
-          return
-        }
+        return task
       })
       return task
     }
@@ -34,11 +39,13 @@ export default new Vuex.Store({
       // SocketProxy.subscribe('tasks.new', (task) => {
       //   store.commit('pushTask', task)
       // })
-      SocketProxy.subscribe('tasks?done=false', (tasks) => {
+
+      const qs = queryString(JSON.parse(fetchId))
+      SocketProxy.subscribe(`tasks?${qs}`, (tasks) => {
         store.commit('updateTasks', {fetchId, tasks})
       })
   
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         SocketProxy.subscribe(`tasks.${task.id}.update`, (task) => {
           store.commit('updateTask', task)
         })
@@ -62,7 +69,8 @@ export default new Vuex.Store({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       })
-      fetch("/tasks", { headers }).then((res) => {
+      const qs = queryString(JSON.parse(fetchId))
+      fetch(`/tasks?${qs}`, { headers }).then((res) => {
         return res.json()
       }).then((tasks) => {
         commit('setTasks', {fetchId, tasks})

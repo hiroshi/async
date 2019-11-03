@@ -3,7 +3,8 @@ class TasksController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: Task.where(done_at: nil).order(:id).all
+        query = { done: ActiveModel::Type::Boolean.new.cast(params[:done]) }
+        render json: get_tasks(query)
       end
     end
   end
@@ -13,8 +14,7 @@ class TasksController < ApplicationController
     # publish('tasks.new', task)
 
     # TODO: publish only if subscribed
-    tasks = Task.where(done_at: nil).order(:id).all
-    publishTasks('tasks?done=false', tasks)
+    publishTasks('tasks?done=false', get_tasks(done: false))
 
     head :ok
   end
@@ -25,13 +25,22 @@ class TasksController < ApplicationController
     # publishTask("tasks.#{task.id}.update", task)
 
     # TODO: publish only if subscribed
-    tasks = Task.where(done_at: nil).order(:id).all
-    publishTasks('tasks?done=false', tasks)
+    publishTasks('tasks?done=false', get_tasks(done: false))
+    publishTasks('tasks?done=true', get_tasks(done: true))
 
     head :ok
   end
 
   private
+
+  def get_tasks(query)
+    tasks = Task.all
+    if query[:done]
+      tasks.where.not(done_at: nil).limit(3).order(updated_at: :desc).reverse
+    else
+      tasks.where(done_at: nil).order(id: :desc)
+    end
+  end
 
   def task_params
     params.permit(:done)

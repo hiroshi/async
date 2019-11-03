@@ -10,9 +10,10 @@
 import Task from './Task.vue'
 
 export default {
+  props: ['query'],
   components: { Task },
   created: async function () {
-    this.fetchId = this.$store.getters.fetchId()
+    this.fetchId = this.$store.getters.fetchId(this.query)
     this.$store.dispatch('fetchTasks', this.fetchId)
   },
   computed: {
