@@ -2,9 +2,11 @@
   <form ref="form">
     <input type="hidden" name="authenticity_token" v-bind:value="csrfToken" />
     <input type="hidden" name="_method" value="patch" />
-    <input type="hidden" name="done" value="0">
-    <input type="checkbox" name="done" v-model="done" value="1">
-    {{ task.name }}
+    <span v-bind:class="{ done }">
+      {{ task.name }}
+    </span>
+    <button v-if="done" v-on:click.stop.prevent="updateDone(false)">undone</button>
+    <button v-else v-on:click.stop.prevent="updateDone(true)">done</button>
   </form>
 </template>
 
@@ -24,14 +26,15 @@ export default {
     task () {
       return this.$store.getters.getTaskById(this.taskId)
     },
-    done: {
-      get: function () {
-        return !!this.task.done_at
-      },
-      set: function (val) {
-        const formData = new FormData(this.$refs.form)
-        this.$store.dispatch('updateTask', { taskId: this.taskId, formData })
-      }
+    done () {
+      return !!this.task.done_at
+    }
+  },
+  methods: {
+    updateDone: function (value) {
+      const formData = new FormData(this.$refs.form)
+      formData.append('done', value)
+      this.$store.dispatch('updateTask', { taskId: this.taskId, formData })
     }
   }
 }
@@ -42,4 +45,7 @@ export default {
 /*   font-size: 2em; */
 /*   text-align: center; */
 /* } */
+.done {
+  text-decoration: line-through;
+}
 </style>

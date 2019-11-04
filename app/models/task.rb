@@ -1,11 +1,11 @@
 class Task < ApplicationRecord
   # scope :done => (value) { value}
+
   def done=(value)
-    self.done_at = case value
-    when "1"
-      Time.now
+    if ActiveModel::Type::Boolean.new.cast(value)
+      self.done_at = Time.now
     else
-      nil
+      self.done_at = nil
     end
   end
 end

@@ -1,12 +1,12 @@
 <template>
   <div>
     <h2>Tasks</h2>
+    <TaskList :query="{done: true}" />
     <form @submit.stop.prevent="create" ref="form">
       <input type="hidden" name="authenticity_token" v-bind:value="csrfToken" />
       <input type="text" name="name" />
       <button type="submit">Submit</button>
     </form>
-    <TaskList :query="{done: true}" />
     <TaskList :query="{done: false}" />
   </div>
 </template>
