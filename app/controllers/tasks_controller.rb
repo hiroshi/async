@@ -38,7 +38,7 @@ class TasksController < ApplicationController
     if query[:done]
       tasks.where.not(done_at: nil).limit(3).order(updated_at: :desc).reverse
     else
-      tasks.where(done_at: nil).order(id: :desc)
+      tasks.where(done_at: nil).order(checked: :desc, order: :desc)
     end
   end
 
