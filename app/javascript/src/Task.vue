@@ -2,6 +2,7 @@
   <form ref="form">
     <input type="hidden" name="authenticity_token" v-bind:value="csrfToken" />
     <input type="hidden" name="_method" value="patch" />
+    <input type="checkbox" name="checked" value="1" v-model="checked" />
     <span v-bind:class="{ done }">
       {{ task.name }}
     </span>
@@ -28,12 +29,20 @@ export default {
     },
     done () {
       return !!this.task.done_at
+    },
+    checked : {
+      get () {
+        return this.task.checked
+      },
+      set (checked) {
+        this.$store.dispatch('patchTask', { taskId: this.taskId, task: { checked } })
+      }
     }
   },
   methods: {
     updateDone: function (value) {
       const formData = new FormData(this.$refs.form)
-      formData.append('done', value)
+      formData.append('task[done]', value)
       this.$store.dispatch('updateTask', { taskId: this.taskId, formData })
     }
   }

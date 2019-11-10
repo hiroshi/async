@@ -83,6 +83,21 @@ export default new Vuex.Store({
       }).catch((err) => {
         console.error(err)
       })
+    },
+    patchTask ({ commit }, { taskId, task }) {
+      let headers = new Headers({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-Token': document.getElementsByName("csrf-token")[0].content,
+        'X-HTTP-Method-Override': 'patch'
+      })
+      fetch(`/tasks/${taskId}`, {
+        headers,
+        method: 'POST',
+        body: JSON.stringify({ task })
+      }).catch((err) => {
+        console.error(err)
+      })
     }
   }
 })

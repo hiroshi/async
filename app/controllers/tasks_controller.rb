@@ -43,7 +43,7 @@ class TasksController < ApplicationController
   end
 
   def task_params
-    params.permit(:done)
+    params.require(:task).permit(:done, :checked)
   end
 
   def publishTask(room, task)
