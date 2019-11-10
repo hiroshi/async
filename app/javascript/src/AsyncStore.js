@@ -76,15 +76,7 @@ export default new Vuex.Store({
         commit('setTasks', {fetchId, tasks})
       })
     },
-    updateTask ({ commit }, { taskId, formData }) {
-      fetch(`/tasks/${taskId}`, {
-        method: 'POST',
-        body: formData
-      }).catch((err) => {
-        console.error(err)
-      })
-    },
-    patchTask ({ commit }, { taskId, task }) {
+    updateTask ({ commit }, { taskId, task }) {
       let headers = new Headers({
         'Content-Type': 'application/json',
         'Accept': 'application/json',

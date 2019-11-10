@@ -1,14 +1,12 @@
 <template>
-  <form ref="form">
-    <input type="hidden" name="authenticity_token" v-bind:value="csrfToken" />
-    <input type="hidden" name="_method" value="patch" />
+  <div>
     <input type="checkbox" name="checked" value="1" v-model="checked" />
     <span v-bind:class="{ done }">
       {{ task.name }}
     </span>
     <button v-if="done" v-on:click.stop.prevent="updateDone(false)">undone</button>
     <button v-else v-on:click.stop.prevent="updateDone(true)">done</button>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -35,15 +33,13 @@ export default {
         return this.task.checked
       },
       set (checked) {
-        this.$store.dispatch('patchTask', { taskId: this.taskId, task: { checked } })
+        this.$store.dispatch('updateTask', { taskId: this.taskId, task: { checked }})
       }
     }
   },
   methods: {
-    updateDone: function (value) {
-      const formData = new FormData(this.$refs.form)
-      formData.append('task[done]', value)
-      this.$store.dispatch('updateTask', { taskId: this.taskId, formData })
+    updateDone: function (done) {
+      this.$store.dispatch('updateTask', { taskId: this.taskId, task: { done }})
     }
   }
 }
