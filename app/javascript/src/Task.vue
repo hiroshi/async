@@ -6,8 +6,8 @@
     </span>
     <span v-else v-bind:class="{ done }" @click="editName">
       {{ task.name }}
-      <button v-if="done" v-on:click.stop.prevent="updateDone(false)">undone</button>
-      <button v-else v-on:click.stop.prevent="updateDone(true)">done</button>
+      <button v-if="done" v-on:click.stop.prevent="update({done: false})">undone</button>
+      <button v-else v-on:click.stop.prevent="update({done: true})">done</button>
     </span>
   </div>
 </template>
@@ -52,9 +52,6 @@ export default {
     update: function (task) {
       this.task = Object.assign(this.task, task)
       this.$store.dispatch('updateTask', { taskId: this.taskId, task })
-    },
-    updateDone: function (done) {
-      this.$store.dispatch('updateTask', { taskId: this.taskId, task: { done }})
     }
   }
 }
