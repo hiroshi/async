@@ -1,11 +1,14 @@
 <template>
   <div>
     <input type="checkbox" name="checked" value="1" v-model="checked" />
-    <span v-bind:class="{ done }">
-      {{ task.name }}
+    <span v-if="nameEditing">
+      <input name="name" ref="name" v-bind:value="task.name" @keyup.enter="enterName" @keyup.esc="nameEditing=false" />
     </span>
-    <button v-if="done" v-on:click.stop.prevent="updateDone(false)">undone</button>
-    <button v-else v-on:click.stop.prevent="updateDone(true)">done</button>
+    <span v-else v-bind:class="{ done }" @click="editName">
+      {{ task.name }}
+      <button v-if="done" v-on:click.stop.prevent="updateDone(false)">undone</button>
+      <button v-else v-on:click.stop.prevent="updateDone(true)">done</button>
+    </span>
   </div>
 </template>
 
@@ -14,7 +17,8 @@ export default {
   props: ['taskId'],
   data: function () {
     return {
-      csrfToken: document.getElementsByName("csrf-token")[0].content
+      nameEditing: false,
+      task: this.$store.getters.getTaskById(this.taskId)
     }
   },
   // SocketProxy.subscribe/unsubscribe should be done in stores.
@@ -22,9 +26,6 @@ export default {
   //   SocketProxy.unsubscribe(`tasks.${taskId}.update`)
   // },
   computed: {
-    task () {
-      return this.$store.getters.getTaskById(this.taskId)
-    },
     done () {
       return !!this.task.done_at
     },
@@ -38,6 +39,20 @@ export default {
     }
   },
   methods: {
+    editName: function () {
+      this.nameEditing = true
+      this.$nextTick(() => {
+        this.$refs.name.focus()
+      })
+    },
+    enterName: function (event) {
+      this.update({name: event.target.value})
+      this.nameEditing = false
+    },
+    update: function (task) {
+      this.task = Object.assign(this.task, task)
+      this.$store.dispatch('updateTask', { taskId: this.taskId, task })
+    },
     updateDone: function (done) {
       this.$store.dispatch('updateTask', { taskId: this.taskId, task: { done }})
     }
