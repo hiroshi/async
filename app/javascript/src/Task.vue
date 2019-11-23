@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" />
+    <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" autocomplete="off" />
     <span v-if="nameEditing">
       <input name="name" ref="name" v-bind:value="task.name" @keyup.enter="enterName" @keyup.esc="nameEditing=false" />
     </span>
@@ -64,5 +64,8 @@ export default {
 /* } */
 .done {
   text-decoration: line-through;
+}
+input {
+  font-size: 15px;
 }
 </style>

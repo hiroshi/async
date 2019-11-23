@@ -4,7 +4,7 @@
     <TaskList :query="{done: true}" />
     <form @submit.stop.prevent="create" ref="form">
       <input type="hidden" name="authenticity_token" v-bind:value="csrfToken" />
-      <input type="text" name="name" />
+      <input type="text" name="name" autocomplete="off"/>
       <button type="submit">Submit</button>
     </form>
     <TaskList :query="{done: false}" />
