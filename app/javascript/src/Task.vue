@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="checkbox" name="checked" value="1" v-model="checked" />
+    <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" />
     <span v-if="nameEditing">
       <input name="name" ref="name" v-bind:value="task.name" @keyup.enter="enterName" @keyup.esc="nameEditing=false" />
     </span>
