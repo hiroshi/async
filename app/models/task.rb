@@ -11,6 +11,7 @@ class Task < ApplicationRecord
 
   before_create do
     self.order = Time.now.to_f
+    self.checked = true
   end
 
   before_save do
