@@ -3,6 +3,7 @@
     <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" autocomplete="off" />
     <span v-if="nameEditing">
       <input name="name" ref="name" v-bind:value="task.name" @keyup.enter="enterName" @keyup.esc="nameEditing=false" />
+      <button v-on:click="nameEditing=false">cancel</button>
     </span>
     <span v-else v-bind:class="{ done }" @click="editName">
       {{ task.name }}
