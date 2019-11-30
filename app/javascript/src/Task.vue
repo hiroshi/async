@@ -3,7 +3,7 @@
     <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" autocomplete="off" />
     <form v-if="nameEditing" @submit.prevent="enterName">
       <input name="name" ref="name" v-bind:value="task.name" @keyup.esc="nameEditing=false" />
-      <a href="#cancel" v-on:click.stop="nameEditing=false">cancel</a>
+      <a href="#cancel" v-on:click.prevent="nameEditing=false">cancel</a>
       <button type="submit">update</button>
     </form>
     <span v-else v-bind:class="{ done }" @click="editName">
