@@ -1,10 +1,11 @@
 <template>
   <div>
     <input v-if="!done" type="checkbox" name="checked" value="1" v-model="checked" autocomplete="off" />
-    <span v-if="nameEditing">
-      <input name="name" ref="name" v-bind:value="task.name" @keyup.enter="enterName" @keyup.esc="nameEditing=false" />
-      <button v-on:click="nameEditing=false">cancel</button>
-    </span>
+    <form v-if="nameEditing" @submit.prevent="enterName">
+      <input name="name" ref="name" v-bind:value="task.name" @keyup.esc="nameEditing=false" />
+      <a href="#cancel" v-on:click.stop="nameEditing=false">cancel</a>
+      <button type="submit">update</button>
+    </form>
     <span v-else v-bind:class="{ done }" @click="editName">
       {{ task.name }}
       <button v-if="done" v-on:click.stop.prevent="update({done: false})">undone</button>
@@ -46,8 +47,8 @@ export default {
         this.$refs.name.focus()
       })
     },
-    enterName: function (event) {
-      this.update({name: event.target.value})
+    enterName: function () {
+      this.update({name: this.$refs.name.value})
       this.nameEditing = false
     },
     update: function (task) {
@@ -68,5 +69,8 @@ export default {
 }
 input {
   font-size: 15px;
+}
+form {
+  display: inline;
 }
 </style>
